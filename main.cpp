@@ -1,4 +1,4 @@
-#include <optional>  //hello
+#include <optional>
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -11,13 +11,13 @@
 using namespace std::experimental;
 
 static std::optional<std::vector<std::byte>> ReadFile(const std::string &path)
-{   
+{
     std::ifstream is{path, std::ios::binary | std::ios::ate};
     if( !is )
         return std::nullopt;
     
     auto size = is.tellg();
-    std::vector<std::byte> contents(size);    
+    std::vector<std::byte> contents(size);
     
     is.seekg(0);
     is.read((char*)contents.data(), size);
@@ -28,7 +28,7 @@ static std::optional<std::vector<std::byte>> ReadFile(const std::string &path)
 }
 
 int main(int argc, const char **argv)
-{    
+{
     std::string osm_data_file = "";
     if( argc > 1 ) {
         for( int i = 1; i < argc; ++i )
@@ -51,16 +51,32 @@ int main(int argc, const char **argv)
         else
             osm_data = std::move(*data);
     }
-    
+    //Complete this TODO to satisfy Project Rubric Criterias of User Input
+  
     // TODO 1: Declare floats `start_x`, `start_y`, `end_x`, and `end_y` and get
     // user input for these values using std::cin. Pass the user input to the
-    // RoutePlanner object below in place of 10, 10, 90, 90.
+    std::string str;
+    float start_x, start_y, end_x, end_y;
+    
+    // input start x and y and store in the start_x and the start_y
+    std::cout << "Enter start_x and start_y: " << "\n";
+    getline(std::cin, str);
+    std::stringstream(str) >> start_x >> start_y;
+
+    // input end x, y and store in the end_x, the end_y
+    std::cout << "Enter end_x and end_y: " << "\n";
+    getline(std::cin, str);
+    std::stringstream(str) >> end_x >> end_y;
+
+    // print the start x,y and end x,y
+    std::cout << "Start Node: < " << start_x << ", " << start_y << " >" << "\n";
+    std::cout << "End Node: < " << end_x << ", " << end_y << " >" << "\n";
 
     // Build Model.
     RouteModel model{osm_data};
 
     // Create RoutePlanner object and perform A* search.
-    RoutePlanner route_planner{model, 10, 10, 90, 90};
+    RoutePlanner route_planner{model, start_x, start_y, end_x, end_y};
     route_planner.AStarSearch();
 
     std::cout << "Distance: " << route_planner.GetDistance() << " meters. \n";
